@@ -51,6 +51,28 @@ class Book extends CI_Model
         ];
     }
 
+    public function getOne($id)
+    {
+        $query = $this->db->get_where($this->table, ['idLibro' => $id]);
+
+        return $query->row();
+    }
+
+    public function store(array $params)
+    {
+        $this->db->insert($this->table, $params);
+
+        return $this->getOne($this->db->insert_id());
+    }
+
+    public function update($id, array $params)
+    {
+        $this->db->where('idLibro', $id);
+        $this->db->update($this->table, $params);
+
+        return $this->getOne($id);
+    }
+
     public function author($query)
     {
         return $query->join('Autor', "Autor.idAutor = $this->table.idAutor", 'inner');
