@@ -196,14 +196,18 @@
 				formData.append('idEditorial', this.modal.book.idEditorial)
 				formData.append('idTema', this.modal.book.idTema)
 
-				axios.post(url, formData)
-					.then(response => {
-						this.getBooks();
-						this.modal.errors = []
-						$('#form-modal').modal('hide');
-					}).catch(err => {
-						this.modal.errors = err.response.data.message.split('\n');
-					})
+				axios.post(url, formData).then(response => {
+					Swal.fire(
+						'Felicidades!',
+						(this.modal.formType === 'edit' ? 'Se ha actualizado el registro con éxito.' : 'Se ha creado el registro con éxito.'),
+						'success'
+					)
+					this.getBooks();
+					this.modal.errors = []
+					$('#form-modal').modal('hide');
+				}).catch(err => {
+					this.modal.errors = err.response.data.message.split('\n');
+				})
 			},
 			deleteBook(book) {
 				Swal.fire({
@@ -245,9 +249,9 @@
 					ISBN: '',
 					Titulo: '',
 					NumeroEjemplares: 1,
-					idAutor: null,
-					idEditorial: null,
-					idTema: null
+					idAutor: 1,
+					idEditorial: 1,
+					idTema: 1
 				}
 			}
 		}

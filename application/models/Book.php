@@ -41,6 +41,7 @@ class Book extends CI_Model
         $query = $this->author($query);
         $query = $this->editorial($query);
         $query = $this->tema($query);
+
         $results = $query->limit($perPage, ($page - 1) * $perPage)->get()->result();
 
         return [

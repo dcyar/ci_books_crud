@@ -12,33 +12,33 @@ class ApiBooks extends CI_Controller
         $this->load->model('Book');
         $this->load->model('BookUpdate');
         $this->load->library('form_validation');
+        $this->load->helper('api');
     }
 
     public function getAll()
     {
-        $results = $this->Book->getPaginate(...$this->getRequestParams());
+        try {
+            $results = $this->Book->getPaginate(...$this->getRequestParams());
 
-        header('Content-Type: application/json');
-
-        echo json_encode($results);
+            json_output(200, array_merge($results, ['status' => true]));
+        } catch (\Exception $e) {
+            json_output($e->getCode(), [
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 
     public function getOne($id)
     {
-        header('Content-Type: application/json');
-
         try {
             $book = $this->Book->getOne($id);
 
-
             if (!$book) throw new Exception('Book not found', 404);
 
-            http_response_code(200);
-
-            echo json_encode($book);
+            json_output(200, $book);
         } catch (\Exception $e) {
-            http_response_code($e->getCode());
-            echo json_encode([
+            json_output($e->getCode(), [
                 'status' => false,
                 'message' => $e->getMessage()
             ]);
@@ -47,28 +47,21 @@ class ApiBooks extends CI_Controller
 
     public function store()
     {
-        header('Content-Type: application/json');
-
         try {
-            $params = $this->load();
-
             $errors = $this->validateFields();
 
             if ($errors) throw new Exception($errors, 422);
 
-            $book = $this->Book->store($params);
+            $params = $this->loadParams();
 
-            http_response_code(201);
+            $this->Book->store($params);
 
-            echo json_encode([
+            json_output(201, [
                 'status' => true,
                 'message' => 'Record created successfully',
-                'data' => $book
             ]);
         } catch (\Exception $e) {
-            http_response_code($e->getCode());
-
-            echo json_encode([
+            json_output($e->getCode(), [
                 'status' => false,
                 'message' => $e->getMessage()
             ]);
@@ -77,11 +70,7 @@ class ApiBooks extends CI_Controller
 
     public function update($id)
     {
-        header('Content-Type: application/json');
-
         try {
-            $params = $this->load();
-
             $errors = $this->validateFields();
 
             if ($errors) throw new Exception($errors, 422);
@@ -96,19 +85,16 @@ class ApiBooks extends CI_Controller
                 'FechaModificacion' => date('Y-m-d H:i:s'),
             ]);
 
-            $bookUpdated = $this->Book->update($id, $params);
+            $params = $this->loadParams();
 
-            http_response_code(201);
+            $this->Book->update($id, $params);
 
-            echo json_encode([
+            json_output(201, [
                 'status' => true,
                 'message' => 'Record updated successfully.',
-                'data' => $bookUpdated
             ]);
         } catch (\Exception $e) {
-            http_response_code($e->getCode());
-
-            echo json_encode([
+            json_output($e->getCode(), [
                 'status' => false,
                 'message' => $e->getMessage()
             ]);
@@ -117,8 +103,6 @@ class ApiBooks extends CI_Controller
 
     public function delete($id)
     {
-        header('Content-Type: application/json');
-
         try {
             $book = $this->Book->getOne($id);
 
@@ -126,16 +110,12 @@ class ApiBooks extends CI_Controller
 
             $this->Book->delete($id);
 
-            http_response_code(204);
-
-            echo json_encode([
+            json_output(204, [
                 'status' => true,
                 'message' => 'Record deleted successfully.'
             ]);
         } catch (\Exception $e) {
-            http_response_code($e->getCode());
-
-            echo json_encode([
+            json_output($e->getCode(), [
                 'status' => false,
                 'message' => $e->getMessage()
             ]);
@@ -182,11 +162,10 @@ class ApiBooks extends CI_Controller
         $this->form_validation->set_rules('idEditorial', 'idEditorial', 'required');
         $this->form_validation->set_rules('idTema', 'idTema', 'required');
 
-
         return $this->form_validation->run() == false ? validation_errors() : false;
     }
 
-    private function load(): array
+    private function loadParams(): array
     {
         return [
             'ISBN'             => $this->input->post('ISBN') ?? NULL,
