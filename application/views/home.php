@@ -148,17 +148,10 @@
 				title: '',
 				buttonText: '',
 				errors: [],
-				book: {
-					idLibro: null,
-					ISBN: '',
-					Titulo: '',
-					NumeroEjemplares: 1,
-					idAutor: null,
-					idEditorial: null,
-					idTema: null
-				},
+				book: null,
 			},
 			init() {
+				this.resetFormModal()
 				this.getBooks();
 				this.$watch('paginate.perPage', (value) => {
 					this.paginate.perPage = value;
@@ -168,8 +161,10 @@
 			},
 			async getBooks(page = 1) {
 				this.paginate.page = page
+
 				const response = await fetch(`/api/books?page=${this.paginate.page}&perPage=${this.paginate.perPage}`);
 				const data = await response.json();
+
 				this.books = data.data;
 				this.paginate.pages = data.totalPages;
 				this.paginate.items = data.totalItems;
@@ -178,9 +173,13 @@
 				this.modal.book = {
 					...book
 				};
+
+				if (action === 'create') this.resetFormModal()
+
 				this.modal.formType = action;
 				this.modal.title = action === 'edit' ? 'Editar Libro' : 'Nuevo Libro';
 				this.modal.buttonText = action === 'edit' ? 'Actualizar' : 'Guardar';
+
 				$('#form-modal').modal('show');
 			},
 			async processForm() {
@@ -200,6 +199,7 @@
 				axios.post(url, formData)
 					.then(response => {
 						this.getBooks();
+						this.modal.errors = []
 						$('#form-modal').modal('hide');
 					}).catch(err => {
 						this.modal.errors = err.response.data.message.split('\n');
@@ -238,6 +238,17 @@
 			},
 			hasError(field) {
 				return this.modal.errors.find(error => error.includes(field))
+			},
+			resetFormModal() {
+				this.modal.book = {
+					idLibro: null,
+					ISBN: '',
+					Titulo: '',
+					NumeroEjemplares: 1,
+					idAutor: null,
+					idEditorial: null,
+					idTema: null
+				}
 			}
 		}
 	}

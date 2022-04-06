@@ -189,12 +189,12 @@ class ApiBooks extends CI_Controller
     private function load(): array
     {
         return [
-            'ISBN'             => $this->input->post('ISBN'),
-            'Titulo'           => $this->input->post('Titulo'),
-            'NumeroEjemplares' => $this->input->post('NumeroEjemplares'),
-            'idAutor'          => $this->input->post('idAutor'),
-            'idEditorial'      => $this->input->post('idEditorial'),
-            'idTema'           => $this->input->post('idTema'),
+            'ISBN'             => $this->input->post('ISBN') ?? NULL,
+            'Titulo'           => $this->input->post('Titulo') ?? NULL,
+            'NumeroEjemplares' => $this->input->post('NumeroEjemplares') ?? NULL,
+            'idAutor'          => $this->input->post('idAutor') ?? NULL,
+            'idEditorial'      => $this->input->post('idEditorial') ?? NULL,
+            'idTema'           => $this->input->post('idTema') ?? NULL,
         ];
     }
 }
