@@ -73,6 +73,12 @@ class Book extends CI_Model
         return $this->getOne($id);
     }
 
+    public function delete($id)
+    {
+        $this->db->where('idLibro', $id);
+        $this->db->delete($this->table);
+    }
+
     public function author($query)
     {
         return $query->join('Autor', "Autor.idAutor = $this->table.idAutor", 'inner');

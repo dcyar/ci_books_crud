@@ -115,6 +115,33 @@ class ApiBooks extends CI_Controller
         }
     }
 
+    public function delete($id)
+    {
+        header('Content-Type: application/json');
+
+        try {
+            $book = $this->Book->getOne($id);
+
+            if (!$book) throw new Exception('Book not found', 404);
+
+            $this->Book->delete($id);
+
+            http_response_code(204);
+
+            echo json_encode([
+                'status' => true,
+                'message' => 'Record deleted successfully.'
+            ]);
+        } catch (\Exception $e) {
+            http_response_code($e->getCode());
+
+            echo json_encode([
+                'status' => false,
+                'message' => $e->getMessage()
+            ]);
+        }
+    }
+
     private function getRequestParams(): array
     {
         $perPage = $this->input->get('perPage') ?? 40;

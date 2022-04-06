@@ -54,5 +54,6 @@ $route['api/books'] = 'ApiBooks/getAll';
 $route['api/books/create'] = 'ApiBooks/store';
 $route['api/books/(:num)'] = 'ApiBooks/getOne/$1';
 $route['api/books/(:num)/update'] = 'ApiBooks/update/$1';
+$route['api/books/(:num)/delete'] = 'ApiBooks/delete/$1';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;

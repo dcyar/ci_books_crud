@@ -29,7 +29,8 @@
 					<td class="text-center" x-text="book.NombreEditorial"></td>
 					<td class="text-center" x-text="book.NombreTema"></td>
 					<td class="text-center">
-						<button class="btn btn-warning btn-sm edit-button" @click="openModal(book, 'edit')">E</button>
+						<button class="btn btn-warning btn-sm" @click="openModal(book, 'edit')">E</button>
+						<button class="btn btn-danger btn-sm" @click="deleteBook(book)">D</button>
 					</td>
 				</tr>
 			</template>
@@ -125,7 +126,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="//unpkg.com/alpinejs" defer></script>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
 	function app() {
@@ -201,6 +204,37 @@
 					}).catch(err => {
 						this.modal.errors = err.response.data.message.split('\n');
 					})
+			},
+			deleteBook(book) {
+				Swal.fire({
+					title: 'Estas segur@?',
+					text: "Este cambio no se puede revertir!",
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#3085d6',
+					cancelButtonColor: '#d33',
+					confirmButtonText: 'Si, eliminar registro!',
+					cancelButtonText: 'Cancelar'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						axios.delete(`/api/books/${book.idLibro}/delete`)
+							.then(response => {
+								Swal.fire(
+									'Eliminado!',
+									'El registro fue eliminado.',
+									'success'
+								)
+
+								this.getBooks();
+							}).catch(err => {
+								Swal.fire(
+									'Error!',
+									'No se pudo eliminar el registro',
+									'error'
+								)
+							})
+					}
+				})
 			},
 			hasError(field) {
 				return this.modal.errors.find(error => error.includes(field))

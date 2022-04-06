@@ -6,11 +6,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 <head>
     <meta charset="utf-8" />
-    <title>Welcome to Books Section</title>
+    <title>Bienvenido a la casa del libro</title>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous" />
-
-    <script src="//unpkg.com/alpinejs" defer></script>
 </head>
 
 <body>
