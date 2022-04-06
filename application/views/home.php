@@ -195,6 +195,7 @@
 				formData.append('idAutor', this.modal.book.idAutor)
 				formData.append('idEditorial', this.modal.book.idEditorial)
 				formData.append('idTema', this.modal.book.idTema)
+				formData.append('<?= $this->security->get_csrf_token_name(); ?>', '<?= $this->security->get_csrf_hash(); ?>')
 
 				axios.post(url, formData).then(response => {
 					Swal.fire(
