@@ -3,7 +3,10 @@
 <div class="container" x-data="app()">
 	<div class="d-flex justify-content-between align-items-center">
 		<h1>Lista de libros</h1>
-		<button class="btn btn-primary btn-sm" @click="openModal(modal.book, 'create')">Nuevo Libro</button>
+		<div class="d-flex justify-content-end align-items-center w-100">
+			<input type="text" class="form-control mr-2 w-25" x-model="search" @keyup.enter="getBooks(paginate.page)" name="search" placeholder="Search by ISBN or Titulo" />
+			<button class="btn btn-primary btn-sm" @click="openModal(modal.book, 'create')">Nuevo Libro</button>
+		</div>
 	</div>
 	<table class="table table-striped">
 		<thead>
@@ -137,6 +140,7 @@
 			authors: <?= json_encode($authors) ?>,
 			publishers: <?= json_encode($publishers) ?>,
 			topics: <?= json_encode($topics) ?>,
+			search: '',
 			paginate: {
 				page: 1,
 				perPage: 10,
@@ -162,9 +166,14 @@
 			async getBooks(page = 1) {
 				this.paginate.page = page
 
-				const response = await fetch(`/api/books?page=${this.paginate.page}&perPage=${this.paginate.perPage}`);
+				let url = `/api/books?page=${this.paginate.page}&perPage=${this.paginate.perPage}`;
+
+				if (this.search) url += `&search=${this.search}`;
+
+				const response = await fetch(url);
 				const data = await response.json();
 
+				this.search = '';
 				this.books = data.data;
 				this.paginate.pages = data.totalPages;
 				this.paginate.items = data.totalItems;

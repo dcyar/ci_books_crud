@@ -28,8 +28,9 @@ class Book extends CI_Model
 
         if ($filters) {
             array_walk($filters, function ($value, $key) use (&$query) {
-                if ($key == 'idAutor') {
-                    $query->where($key, $value);
+                if ($key == 'search') {
+                    $query->like('ISBN', $value);
+                    $query->or_like('Titulo', $value);
                 } else {
                     $query->where($key, $value);
                 }

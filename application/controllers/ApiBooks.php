@@ -139,7 +139,7 @@ class ApiBooks extends CI_Controller
 
     private function getFilters(): array
     {
-        $keys    = ['idAutor'];
+        $keys    = ['search'];
         $filters = [];
 
         array_walk($keys, function ($value) use (&$filters) {
